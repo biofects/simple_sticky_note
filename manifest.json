@@ -1,0 +1,15 @@
+{
+  "domain": "simple_sticky_note",
+  "name": "Simple Sticky Note",
+  "documentation": "https://github.com/biofects/simple_sticky_note",
+  "issue_tracker": "https://github.com/biofects/simple_sticky_note/issues",
+  "dependencies": [],
+  "codeowners": ["@biofects"],
+  "requirements": [],
+  "iot_class": "local_polling",
+  "version": "0.1.0",
+  "config_flow": true
+}
+
+
+
