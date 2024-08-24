@@ -36,12 +36,13 @@ A customizable sticky note card for Home Assistant dashboards.
 
 
 Copy Code
-```
+```yaml
 frontend:
   themes: !include_dir_merge_named themes
   extra_module_url:
     - /custom_components/simple_sticky_note/js/sticky_note_card.js
 ```
+
 
 Restart Home Assistant.
 Configuration
