@@ -88,3 +88,4 @@ For bugs or feature requests, please open an issue on the GitHub repository.
 
 License
 This project is licensed under the MIT License.
+

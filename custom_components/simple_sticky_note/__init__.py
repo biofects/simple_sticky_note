@@ -1,10 +1,14 @@
-"""The Simple Sticky Note integration."""
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.const import Platform
+from homeassistant.helpers import config_validation as cv
+
 from .const import DOMAIN
 
-PLATFORMS: list[str] = ["sensor"]
+PLATFORMS: list[Platform] = [Platform.SENSOR]
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Simple Sticky Note component."""
@@ -15,11 +19,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         True
     )
 
-    # Add this to your frontend resources
-    hass.components.frontend.async_register_built_in_panel(
-        "custom", "simple_sticky_note",
-        "mdi:note-text",
-        frontend_url_path=f"custom_components/{DOMAIN}/js/sticky_note_card.js"
+    # Register as a Lovelace resource
+    hass.components.frontend.async_register_extra_script(
+        f"/custom_components/{DOMAIN}/js/sticky_note_card.js"
     )
 
     return True
@@ -36,4 +38,3 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
-
