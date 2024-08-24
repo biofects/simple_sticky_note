@@ -42,6 +42,8 @@ frontend:
   extra_module_url:
     - /custom_components/simple_sticky_note/js/sticky_note_card.js
 ```
+
+
 Restart Home Assistant.
 Configuration
 Input Text Entity
