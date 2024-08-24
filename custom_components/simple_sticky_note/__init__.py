@@ -19,8 +19,12 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         True
     )
 
-    # Register as a Lovelace resource
-    hass.components.frontend.add_resources([f"/local/custom_components/{DOMAIN}/js/sticky_note_card.js"])
+    # Ensure the resource is available to Lovelace
+    if not hass.components.lovelace.async_find_resource(f"/custom_components/{DOMAIN}/js/sticky_note_card.js"):
+        hass.components.lovelace.async_create_resource(
+            url=f"/custom_components/{DOMAIN}/js/sticky_note_card.js",
+            resource_type="module"
+        )
 
     return True
 
