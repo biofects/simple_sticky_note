@@ -20,11 +20,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     )
 
     # Ensure the resource is available to Lovelace
-    if not hass.components.lovelace.async_find_resource(f"/custom_components/{DOMAIN}/js/sticky_note_card.js"):
-        hass.components.lovelace.async_create_resource(
-            url=f"/custom_components/{DOMAIN}/js/sticky_note_card.js",
-            resource_type="module"
-        )
+    resource_url = f"/custom_components/{DOMAIN}/js/sticky_note_card.js"
+    if not any(resource["url"] == resource_url for resource in hass.data["lovelace"]["resources"].async_items()):
+        await hass.data["lovelace"]["resources"].async_create_item({"res_type": "module", "url": resource_url})
 
     return True
 
@@ -40,3 +38,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
+
