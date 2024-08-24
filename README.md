@@ -34,13 +34,13 @@ A customizable sticky note card for Home Assistant dashboards.
 2. Copy the file to your `config/www` directory.
 3. Add the following to your `configuration.yaml`:
 
-#### Ensure the sticky_note_card.js is put into your config/www
 
 Copy Code
 ```yaml
 frontend:
+  themes: !include_dir_merge_named themes
   extra_module_url:
-    - /local/sticky_note_card.js
+    - /custom_components/simple_sticky_note/js/sticky_note_card.js
 ```
 Restart Home Assistant.
 Configuration
@@ -86,3 +86,4 @@ For bugs or feature requests, please open an issue on the GitHub repository.
 
 License
 This project is licensed under the MIT License.
+
