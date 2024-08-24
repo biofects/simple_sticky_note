@@ -3,10 +3,10 @@
   "name": "Simple Sticky Note",
   "codeowners": ["@biofects"],
   "config_flow": true,
-  "dependencies": [],
+  "dependencies": ["frontend", "lovelace"],
   "documentation": "https://github.com/biofects/simple_sticky_note",
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/biofects/simple_sticky_note/issues",
   "requirements": [],
-  "version": "1.3.1"
+  "version": "1.3.6"
 }
