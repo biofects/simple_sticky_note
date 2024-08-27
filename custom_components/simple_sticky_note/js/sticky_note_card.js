@@ -16,31 +16,42 @@ class SimpleStickyNote extends HTMLElement {
     this.innerHTML = `
       <ha-card>
         <div class="note-content"></div>
-        <button class="edit-button">Edit</button>
+        <div class="button-container">
+          <ha-icon-button class="edit-button">
+            <ha-icon icon="mdi:pencil"></ha-icon>
+          </ha-icon-button>
+          <ha-icon-button class="delete-button">
+            <ha-icon icon="mdi:delete"></ha-icon>
+          </ha-icon-button>
+        </div>
       </ha-card>
     `;
     this.content = this.querySelector('.note-content');
     this.editButton = this.querySelector('.edit-button');
-
+    this.deleteButton = this.querySelector('.delete-button');
     this.editButton.addEventListener('click', () => this.showEditPopup());
-
+    this.deleteButton.addEventListener('click', () => this.deleteNote());
     this.style.display = 'block';
     this.style.height = '100%';
-
     const style = document.createElement('style');
     style.textContent = `
       .note-content {
-        height: calc(100% - 40px);
+        height: calc(100% - 48px);
         overflow-y: auto;
-        padding: 10px;
-        font-size: 24px;
+        padding: 16px;
+        font-size: 1.2em;
+        line-height: 1.4;
+        word-wrap: break-word;
+        white-space: pre-wrap;
       }
-      .edit-button {
+      .button-container {
         position: absolute;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        width: calc(100% - 20px);
+        bottom: 8px;
+        right: 8px;
+        display: flex;
+      }
+      .edit-button, .delete-button {
+        --mdc-icon-button-size: 40px;
       }
     `;
     this.appendChild(style);
@@ -49,10 +60,9 @@ class SimpleStickyNote extends HTMLElement {
   updateCard() {
     const entityId = this.config.entity;
     const state = this._hass.states[entityId];
-    
+
     if (state) {
       this.content.textContent = state.state;
-      this.adjustFontSize(this.content);
     }
   }
 
@@ -66,45 +76,35 @@ class SimpleStickyNote extends HTMLElement {
   showEditPopup() {
     const oldContent = this.content.textContent;
     this.content.style.display = 'none';
-    this.editButton.style.display = 'none';
-
+    this.querySelector('.button-container').style.display = 'none';
     const textarea = document.createElement('textarea');
     textarea.value = oldContent;
     textarea.style.width = '100%';
-    textarea.style.height = 'calc(100% - 40px)';
+    textarea.style.height = 'calc(100% - 48px)';
     textarea.style.boxSizing = 'border-box';
-    textarea.style.padding = '10px';
+    textarea.style.padding = '16px';
     textarea.style.border = 'none';
     textarea.style.resize = 'none';
     textarea.style.fontFamily = 'inherit';
-    textarea.style.fontSize = '24px';
+    textarea.style.fontSize = '1.2em';
+    textarea.style.lineHeight = '1.4';
     textarea.style.backgroundColor = 'transparent';
-    textarea.style.color = 'black';
-
-    textarea.addEventListener('input', () => this.adjustFontSize(textarea));
-
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.style.marginRight = '5px';
-
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Cancel';
-
+    textarea.style.color = 'var(--primary-text-color)';
     const buttonContainer = document.createElement('div');
     buttonContainer.style.position = 'absolute';
-    buttonContainer.style.bottom = '10px';
-    buttonContainer.style.left = '10px';
-    buttonContainer.style.right = '10px';
+    buttonContainer.style.bottom = '8px';
+    buttonContainer.style.right = '8px';
     buttonContainer.style.display = 'flex';
-    buttonContainer.style.justifyContent = 'space-between';
+    const saveButton = document.createElement('ha-icon-button');
+    saveButton.innerHTML = '<ha-icon icon="mdi:check-circle" style="color: green;"></ha-icon>';
+    
+    const cancelButton = document.createElement('ha-icon-button');
+    cancelButton.innerHTML = '<ha-icon icon="mdi:close-circle" style="color: red;"></ha-icon>';
     buttonContainer.appendChild(saveButton);
     buttonContainer.appendChild(cancelButton);
-
     this.querySelector('ha-card').appendChild(textarea);
     this.querySelector('ha-card').appendChild(buttonContainer);
-
     textarea.focus();
-
     saveButton.addEventListener('click', () => this.saveNote(textarea.value));
     cancelButton.addEventListener('click', () => this.cancelEdit(oldContent));
   }
@@ -119,14 +119,26 @@ class SimpleStickyNote extends HTMLElement {
       value: newContent
     });
     this.content.textContent = newContent;
-    this.adjustFontSize(this.content);
     this.cleanupEditMode();
   }
 
   cancelEdit(oldContent) {
     this.content.textContent = oldContent;
-    this.adjustFontSize(this.content);
     this.cleanupEditMode();
+  }
+
+  deleteNote() {
+    if (confirm("Are you sure you want to delete this note?")) {
+      if (!this._hass) {
+        console.error('Hass object is not available');
+        return;
+      }
+      this._hass.callService('input_text', 'set_value', {
+        entity_id: this.config.entity,
+        value: ''
+      });
+      this.content.textContent = '';
+    }
   }
 
   cleanupEditMode() {
@@ -135,25 +147,7 @@ class SimpleStickyNote extends HTMLElement {
     if (textarea) textarea.remove();
     if (buttonContainer) buttonContainer.remove();
     this.content.style.display = 'block';
-    this.editButton.style.display = 'block';
-  }
-
-  adjustFontSize(element) {
-    const maxFontSize = 24;
-    const minFontSize = 12;
-    const maxLength = 100;  // Adjust this value to change when the font starts shrinking
-    const text = element.value || element.textContent;
-    const length = text.length;
-    
-    if (length <= maxLength) {
-      element.style.fontSize = `${maxFontSize}px`;
-    } else {
-      const fontSize = Math.max(
-        minFontSize,
-        maxFontSize - ((length - maxLength) / 5)
-      );
-      element.style.fontSize = `${fontSize}px`;
-    }
+    this.querySelector('.button-container').style.display = 'flex';
   }
 
   static getStubConfig() {
