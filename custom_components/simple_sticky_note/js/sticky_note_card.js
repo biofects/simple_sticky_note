@@ -53,6 +53,12 @@ class SimpleStickyNote extends HTMLElement {
       .edit-button, .delete-button {
         --mdc-icon-button-size: 40px;
       }
+      .emoji-picker {
+        position: absolute;
+        bottom: 48px;
+        right: 8px;
+        z-index: 1000;
+      }
     `;
     this.appendChild(style);
   }
@@ -97,9 +103,15 @@ class SimpleStickyNote extends HTMLElement {
     buttonContainer.style.display = 'flex';
     const saveButton = document.createElement('ha-icon-button');
     saveButton.innerHTML = '<ha-icon icon="mdi:check-circle" style="color: green;"></ha-icon>';
-    
+
     const cancelButton = document.createElement('ha-icon-button');
     cancelButton.innerHTML = '<ha-icon icon="mdi:close-circle" style="color: red;"></ha-icon>';
+
+    const emojiButton = document.createElement('ha-icon-button');
+    emojiButton.innerHTML = '<ha-icon icon="mdi:emoticon-happy-outline"></ha-icon>';
+    emojiButton.addEventListener('click', () => this.toggleEmojiPicker(textarea));
+
+    buttonContainer.appendChild(emojiButton);
     buttonContainer.appendChild(saveButton);
     buttonContainer.appendChild(cancelButton);
     this.querySelector('ha-card').appendChild(textarea);
@@ -107,6 +119,30 @@ class SimpleStickyNote extends HTMLElement {
     textarea.focus();
     saveButton.addEventListener('click', () => this.saveNote(textarea.value));
     cancelButton.addEventListener('click', () => this.cancelEdit(oldContent));
+  }
+
+  toggleEmojiPicker(textarea) {
+    if (this.emojiPicker) {
+      this.emojiPicker.remove();
+      this.emojiPicker = null;
+    } else {
+      this.emojiPicker = document.createElement('div');
+      this.emojiPicker.classList.add('emoji-picker');
+      this.emojiPicker.innerHTML = this.getEmojiList();
+      this.querySelector('ha-card').appendChild(this.emojiPicker);
+      this.emojiPicker.addEventListener('click', (e) => {
+        if (e.target.tagName === 'SPAN') {
+          textarea.value += e.target.textContent;
+          this.emojiPicker.remove();
+          this.emojiPicker = null;
+        }
+      });
+    }
+  }
+
+  getEmojiList() {
+    const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕'];
+    return emojis.map(emoji => `<span style="cursor: pointer; font-size: 1.5em; padding: 5px;">${emoji}</span>`).join('');
   }
 
   saveNote(newContent) {
@@ -146,6 +182,7 @@ class SimpleStickyNote extends HTMLElement {
     const buttonContainer = this.querySelector('ha-card > div:last-child');
     if (textarea) textarea.remove();
     if (buttonContainer) buttonContainer.remove();
+    if (this.emojiPicker) this.emojiPicker.remove();
     this.content.style.display = 'block';
     this.querySelector('.button-container').style.display = 'flex';
   }
