@@ -4,7 +4,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.components.input_text import DOMAIN as INPUT_TEXT_DOMAIN
-
 from .const import DOMAIN, CONF_NOTE_TEXT
 
 async def async_setup_entry(
@@ -27,7 +26,6 @@ async def async_setup_entry(
 
 class SimpleStickNoteSensor(SensorEntity):
     """Representation of a Simple Sticky Note sensor."""
-
     def __init__(self, hass, input_text_entity_id):
         """Initialize the sensor."""
         self.hass = hass
@@ -38,10 +36,10 @@ class SimpleStickNoteSensor(SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self.hass.states.get(self._input_text_entity_id).state
+        entity_state = self.hass.states.get(self._input_text_entity_id)
+        return entity_state.state if entity_state else None
 
     async def async_update(self) -> None:
         """Fetch new state data for the sensor."""
         # The state is updated automatically when the input_text entity changes
         pass
-
