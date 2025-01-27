@@ -3,6 +3,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.const import Platform
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.network import StaticPathConfig
 from .const import DOMAIN
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
@@ -11,12 +12,14 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Simple Sticky Note component."""
-    # Register the static path for your JavaScript file
-    hass.http.register_static_path(
-        f"/custom_components/{DOMAIN}/js/sticky_note_card.js",
-        hass.config.path(f"custom_components/{DOMAIN}/js/sticky_note_card.js"),
-        True
-    )
+    # Register the static path for your JavaScript file using async_register_static_paths
+    await hass.http.async_register_static_paths([
+        StaticPathConfig(
+            url=f"/custom_components/{DOMAIN}/js/sticky_note_card.js",
+            path=hass.config.path(f"custom_components/{DOMAIN}/js/sticky_note_card.js"),
+            cache_headers=True
+        )
+    ])
 
     # Add the resource to Lovelace
     resource_url = f"/custom_components/{DOMAIN}/js/sticky_note_card.js"
