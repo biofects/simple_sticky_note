@@ -11,8 +11,9 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Simple Sticky Note component."""
-    # Add the resource to Lovelace
     resource_url = f"/custom_components/{DOMAIN}/js/sticky_note_card.js"
+    
+    # Add the resource to Lovelace if it doesn't exist
     if not any(resource["url"] == resource_url for resource in hass.data["lovelace"]["resources"].async_items()):
         await hass.data["lovelace"]["resources"].async_create_item({"res_type": "module", "url": resource_url})
 
