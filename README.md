@@ -37,14 +37,13 @@ A customizable sticky note card for Home Assistant dashboards.
 
 Copy Code
 ```yaml
-frontend:
-  themes: !include_dir_merge_named themes
-  extra_module_url:
-    - /custom_components/simple_sticky_note/js/sticky_note_card.js
+lovelace:
+  mode: yaml
+  resources:
+    - url: /hacsfiles/simple_sticky_note/sticky_note_card.js
+      type: module
 ```
 
-
-Restart Home Assistant.
 Configuration
 Input Text Entity
 First, you need to create an input_text entity to store the note content. Add the following to your configuration.yaml:
@@ -56,6 +55,11 @@ input_text:
     name: Sticky Note
     max: 255
 ```
+
+
+Restart Home Assistant.
+
+
 Lovelace Configuration
 Add the following to your Lovelace configuration:
 
