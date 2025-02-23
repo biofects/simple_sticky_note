@@ -1,36 +1,45 @@
-from homeassistant.config_entries import ConfigEntry
+# __init__.py
+
+import logging
+import os
 from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import ConfigType
-from homeassistant.const import Platform
-from homeassistant.helpers import config_validation as cv
-from .const import DOMAIN
+from homeassistant.components.frontend import async_register_built_in_panel
 
-PLATFORMS: list[Platform] = [Platform.SENSOR]
-
-CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+DOMAIN = "simple_sticky_note"
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Simple Sticky Note component."""
-    resource_url = f"/custom_components/{DOMAIN}/js/sticky_note_card.js"
+    # Register the module as a frontend resource
+    hass.http.register_static_path(
+        f"/{DOMAIN}", 
+        os.path.join(os.path.dirname(__file__), "www"),
+        True
+    )
     
-    # Add the resource to Lovelace if it doesn't exist
-    if not any(resource["url"] == resource_url for resource in hass.data["lovelace"]["resources"].async_items()):
-        await hass.data["lovelace"]["resources"].async_create_item({"res_type": "module", "url": resource_url})
+    # Register the resource with frontend
+    hass.components.frontend.async_register_built_in_panel(
+        component_name="custom",
+        sidebar_title="Simple Sticky Note",
+        sidebar_icon="mdi:note-text",
+        frontend_url_path="simple-sticky-note",
+        require_admin=False,
+        config={"_panel_custom": {
+            "name": "simple-sticky-note",
+            "module_url": f"/{DOMAIN}/simple-sticky-note.js",
+            "trust_external": False
+        }}
+    )
 
+    hass.data[DOMAIN] = {}
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Simple Sticky Note from a config entry."""
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = entry.data
-
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        hass.data[DOMAIN].pop(entry.entry_id)
-
-    return unload_ok
+    return True
