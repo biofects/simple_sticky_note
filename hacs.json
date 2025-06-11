@@ -1,10 +1,11 @@
 {
   "name": "Simple Sticky Note",
-  "domains": ["sensor", "simple_sticky_note"],
+  "domains": ["simple_sticky_note"],
   "homeassistant": "2025.1.3",
   "render_readme": true,
   "iot_class": "local_push",
   "country": "US",
   "content_in_root": false,
-  "releases_in_root": false
+  "releases_in_root": false,
+  "filename": "simple_sticky_note.zip"
 }

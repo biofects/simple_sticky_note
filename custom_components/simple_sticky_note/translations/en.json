@@ -1,13 +1,14 @@
 {
-    "config": {
-        "step": {
-            "user": {
-                "data": {
-                    "note_text": "Note Text"
-                },
-                "description": "Enter the text for your sticky note",
-                "title": "Simple Sticky Note Configuration"
-            }
+  "config": {
+    "title": "Simple Sticky Note",
+    "step": {
+      "user": {
+        "title": "Set up Simple Sticky Note",
+        "description": "Configure your sticky note integration",
+        "data": {
+          "note_text": "Initial note text (optional)"
         }
+      }
     }
+  }
 }
