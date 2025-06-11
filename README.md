@@ -27,6 +27,16 @@ or
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TWRQVYJWC77E6)
 ---
 
+### 1. Display View
+![Display View](https://github.com/biofects/simple_sticky_note/raw/main/images/display-mode.png)
+
+### 2. Edit Mode
+![Edit Mode](https://github.com/biofects/simple_sticky_note/raw/main/images/edit-mode.png)
+
+### 3. Emoji Support
+![Emoji Support](https://github.com/biofects/simple_sticky_note/raw/main/images/emojis.png)
+
+
 ## Installation
 
 ### HACS (Recommended)
