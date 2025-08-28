@@ -1,9 +1,7 @@
 import logging
-import os
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import ConfigType
-from homeassistant.components.http import StaticPathConfig
 
 from .const import DOMAIN
 
@@ -11,13 +9,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Simple Sticky Note component."""
-    await hass.http.async_register_static_paths([
-        StaticPathConfig(
-            f"/community/{DOMAIN}",
-            os.path.join(os.path.dirname(__file__), "www"),
-            True
-        )
-    ])
+    # Static files are now served from the root www directory
     hass.data[DOMAIN] = {}
     return True
 

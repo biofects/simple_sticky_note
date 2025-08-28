@@ -3,6 +3,8 @@
 A customizable sticky note integration for Home Assistant dashboards with editable text, emoji support, and dynamic styling.
 
 [![Sponsor Me](https://img.shields.io/badge/Sponsor%20Me-%F0%9F%92%AA-purple?style=for-the-badge)](https://github.com/sponsors/biofects?frequency=recurring&sponsor=biofects)
+[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)](https://github.com/biofects/simple_sticky_note/releases)
+[![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
  
 ## Features
 
@@ -41,70 +43,99 @@ or
 
 ### HACS (Recommended)
 
-#### Adding as a Custom Repository
+#### Method 1: Adding as a Custom Repository
 
-1. Make sure you have [HACS](https://hacs.xyz/) installed in your Home Assistant instance.
-2. Go to the HACS panel, then click on the three dots in the top right corner and select "Custom repositories."
-3. In the dialog that appears, paste the following URL: `https://github.com/biofects/simple_sticky_note` and select "Integration" as the category.
-4. Click "Add," then navigate to the "Integrations" tab, click the "+ Explore & Download Repositories" button, and search for "Simple Sticky Note."
-5. Install the integration and restart Home Assistant.
+1. Ensure you have [HACS](https://hacs.xyz/) installed in your Home Assistant instance.
+2. Go to HACS → Integrations → ⋮ (three dots menu) → Custom repositories
+3. Add repository URL: `https://github.com/biofects/simple_sticky_note`
+4. Select category: "Integration"
+5. Click "Add" → Find "Simple Sticky Note" → Install
+6. **Restart Home Assistant**
+
+#### Method 2: Direct HACS Installation (when available in default HACS)
+1. Go to HACS → Integrations
+2. Click "+ Explore & Download Repositories"
+3. Search for "Simple Sticky Note"
+4. Click Install → **Restart Home Assistant**
 
 ### Manual Installation
 
-1. Download the latest release from GitHub.
-2. Copy the `simple_sticky_note` folder to your `config/custom_components/` directory.
-3. Restart Home Assistant.
+1. Download the [latest release](https://github.com/biofects/simple_sticky_note/releases/latest)
+2. Extract and copy the `custom_components/simple_sticky_note` folder to your `config/custom_components/` directory
+3. Copy the `www` folder to your `config/` directory (merge with existing www folder)
+4. **Restart Home Assistant**
 
-## Configuration
+## Quick Setup Guide
 
-### Step 1: Create Input Text Entity
-
-First, add an `input_text` entity to your `configuration.yaml`:
+### Step 1: Create Input Text Entity (Required)
+Add this to your `configuration.yaml` file:
 
 ```yaml
 input_text:
   simple_sticky_note:
     name: Simple Sticky Note
     max: 500
-    initial: ""
+    initial: "Write your note here"
 ```
 
-### Step 2: Configure Lovelace Resources
+**Restart Home Assistant** after adding this.
 
-Add the JavaScript resource to your Lovelace configuration. Choose one method:
+### Step 2: Add the Integration
+After restart:
+1. Go to **Settings** → **Devices & Services**
+2. Click **"+ Add Integration"**
+3. Search for **"Simple Sticky Note"**
+4. Follow the setup wizard to configure your initial note text
+
+### Step 3: Add the Frontend Resource (if needed)
+The card resource should be automatically available after installing via HACS. If you encounter issues:
 
 #### Method A: YAML Mode
-If using YAML mode, add to your `configuration.yaml`:
+Add to your `configuration.yaml`:
 
 ```yaml
 lovelace:
   mode: yaml
   resources:
-    - url: /community/simple_sticky_note/sticky_note_card.js
+    - url: /community/simple-sticky-note/simple-sticky-note-card.js
       type: module
 ```
 
 #### Method B: UI Mode
-1. Go to Settings → Dashboards → Three dots menu → Resources
-2. Click "Add Resource"
-3. URL: `/community/simple_sticky_note/sticky_note_card.js`
-4. Resource type: JavaScript Module
+1. Go to **Settings** → **Dashboards** → **⋮** → **Resources**
+2. Click **"+ Add Resource"**
+3. URL: `/community/simple-sticky-note/simple-sticky-note-card.js`
+4. Resource type: **JavaScript Module**
+5. Click **Create**
 
-### Step 3: Set Up the Integration
-
-1. Go to Settings → Devices & Services
-2. Click "Add Integration"
-3. Search for "Simple Sticky Note"
-4. Follow the setup wizard to configure your initial note text
-
-### Step 4: Add the Card to Your Dashboard
-
-Add the following card configuration to your Lovelace dashboard:
+### Step 4: Add Your First Sticky Note
+1. Edit your dashboard
+2. Add a new card with this configuration:
 
 ```yaml
 type: custom:simple-sticky-note
 entity: input_text.simple_sticky_note
+title: "My Sticky Note"
 ```
+
+**That's it!** Your sticky note card should now be working.
+
+## Configuration Options
+
+### Basic Card Configuration
+
+```yaml
+type: custom:simple-sticky-note
+entity: input_text.simple_sticky_note
+title: "My Note"  # Optional title
+```
+
+### Advanced Configuration
+
+```yaml
+type: custom:simple-sticky-note
+entity: input_text.simple_sticky_note
+title: "Shopping List"
 
 #### With Custom Styling (Optional)
 
@@ -200,15 +231,22 @@ Then use separate cards for each:
 ### File Structure
 ```
 simple_sticky_note/
-├── __init__.py
-├── sensor.py
-├── config_flow.py
-├── const.py
-├── manifest.json
-└── www/
-    └── community/
-        └── simple_sticky_note/
-            └── sticky_note_card.js
+├── custom_components/
+│   └── simple_sticky_note/
+│       ├── __init__.py
+│       ├── sensor.py
+│       ├── config_flow.py
+│       ├── const.py
+│       ├── manifest.json
+│       └── translations/
+│           └── en.json
+├── www/
+│   └── community/
+│       └── simple-sticky-note/
+│           └── simple-sticky-note-card.js
+├── images/
+├── hacs.json
+└── README.md
 ```
 
 ### Contributing
@@ -229,8 +267,21 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Changelog
 
+### Version 3.1.0 (Latest)
+- 🔧 **Fixed file structure** for proper HACS and Home Assistant compatibility
+- 📁 **Moved frontend resources** to correct `www/community/simple-sticky-note/` location
+- 🏷️ **Renamed card file** to `simple-sticky-note-card.js` for consistency
+- 📚 **Updated installation instructions** with clearer step-by-step guide
+- 🧹 **Cleaned up code** and removed unnecessary static path registration
+- ✅ **Improved HACS integration** support
+- ⚠️ **Known limitation**: Requires manual `input_text` entity creation (to be improved in future version)
+
 ### Version 3.0.0
-- Added full Home Assistant integration with config flow
-- Improved card functionality with emoji picker
-- Better error handling and user experience
-- Updated for Home Assistant 2025.1.3 compatibility
+- ➕ **Added full Home Assistant integration** with config flow
+- 🎨 **Improved card functionality** with emoji picker
+- 🛡️ **Better error handling** and user experience
+- 🔄 **Updated for Home Assistant 2025.1.3** compatibility
+
+### Planned for Next Version
+- 🚀 **Automatic entity creation** - Remove requirement for manual `input_text` setup
+- 🔧 **Improved integration** with proper entity management
