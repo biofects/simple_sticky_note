@@ -74,7 +74,7 @@ Add this to your `configuration.yaml` file:
 input_text:
   simple_sticky_note:
     name: Simple Sticky Note
-    max: 500
+    max: 250
     initial: "Write your note here"
 ```
 
