@@ -189,13 +189,13 @@ To create multiple sticky notes, add additional `input_text` entities:
 input_text:
   sticky_note_shopping:
     name: Shopping List
-    max: 500
+    max: 250
   sticky_note_reminders:
     name: Daily Reminders  
-    max: 500
+    max: 250
   sticky_note_ideas:
     name: Project Ideas
-    max: 500
+    max: 250
 ```
 
 Then use separate cards for each:
